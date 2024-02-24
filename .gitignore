@@ -1,2 +1,3 @@
 ./temp/*
 rm -rf ./temp
+.vscode/
