@@ -129,4 +129,4 @@ def compare_all_codes_by_output(code1: bytes = File(...), code2: bytes = File(..
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost")
+    uvicorn.run(app, host="0.0.0.0" , port=8000)
