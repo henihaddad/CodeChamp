@@ -35,18 +35,15 @@ def compile_execute_all_file_types(code: bytes = File(...), input: bytes = File(
     with open(input_file_path, "wb") as f:
         f.write(input)
 
-    if programming_language == SupportedLanguages.CPP:
-        executer = CppExecutor(code_file_path, input_file_path)
-    elif programming_language == SupportedLanguages.JAVA:
-        executer = JavaExecutor(code_file_path, input_file_path)
-    elif programming_language == SupportedLanguages.RUST:
-        executer = RustExecutor(code_file_path, input_file_path)
-    elif programming_language == SupportedLanguages.PYTHON:
-        executer = PythonExecutor(code_file_path, input_file_path)
-    elif programming_language == SupportedLanguages.GO:
-        executer = GoExecutor(code_file_path, input_file_path)
-    else:
-        return {"error": "Unsupported language"}
+    executors = {
+        SupportedLanguages.CPP: CppExecutor,
+        SupportedLanguages.JAVA: JavaExecutor,
+        SupportedLanguages.RUST: RustExecutor,
+        SupportedLanguages.PYTHON: PythonExecutor,
+        SupportedLanguages.GO: GoExecutor
+    }
+
+    executer = executors[programming_language](code_file_path, input_file_path)
     
     output_file_path = executer.run()
     if output_file_path == "":
@@ -77,18 +74,15 @@ def validate_input_output_all_file_types(code: bytes = File(...), input: bytes =
     with open(output_file_path, "wb") as f:
         f.write(expected_output)
 
-    if programming_language == SupportedLanguages.CPP:
-        tester = CppTester(code_file_path, input_file_path, output_file_path)
-    elif programming_language == SupportedLanguages.JAVA:
-        tester = JavaTester(code_file_path, input_file_path, output_file_path)
-    elif programming_language == SupportedLanguages.RUST:
-        tester = RustTester(code_file_path, input_file_path, output_file_path)
-    elif programming_language == SupportedLanguages.PYTHON:
-        tester = PythonTester(code_file_path, input_file_path, output_file_path)
-    elif programming_language == SupportedLanguages.GO:
-        tester = GoTester(code_file_path, input_file_path, output_file_path)
-    else:
-        return {"error": "Unsupported language"}
+    testers = {
+        SupportedLanguages.CPP: CppTester,
+        SupportedLanguages.JAVA: JavaTester,
+        SupportedLanguages.RUST: RustTester,
+        SupportedLanguages.PYTHON: PythonTester,
+        SupportedLanguages.GO: GoTester
+    }
+
+    tester = testers[programming_language](code_file_path, input_file_path, output_file_path)
     
     result = tester.test()
     if result:
@@ -115,18 +109,18 @@ def compare_all_codes_by_output(code1: bytes = File(...), code2: bytes = File(..
     with open(input_file_path, "wb") as f:
         f.write(input)
 
-    if programming_language == SupportedLanguages.CPP:
-        result = compare_cpp_codes_by_output(code1_file_path, code2_file_path, input_file_path)
-    elif programming_language == SupportedLanguages.JAVA:
-        result = compare_java_codes_by_output(code1_file_path, code2_file_path, input_file_path)
-    elif programming_language == SupportedLanguages.RUST:
-        result = compare_rust_codes_by_output(code1_file_path, code2_file_path, input_file_path)
-    elif programming_language == SupportedLanguages.PYTHON:
-        result = compare_python_codes_by_output(code1_file_path, code2_file_path, input_file_path)
-    elif programming_language == SupportedLanguages.GO:
-        result = compare_go_codes_by_output(code1_file_path, code2_file_path, input_file_path)
-    else:
-        return {"error": "Unsupported language"}
+    compare_functions = {
+        SupportedLanguages.CPP: compare_cpp_codes_by_output,
+        SupportedLanguages.JAVA: compare_java_codes_by_output,
+        SupportedLanguages.RUST: compare_rust_codes_by_output,
+        SupportedLanguages.PYTHON: compare_python_codes_by_output,
+        SupportedLanguages.GO: compare_go_codes_by_output
+    }
+
+    compare_function = compare_functions[programming_language]
+
+    result = compare_function(code1_file_path, code2_file_path, input_file_path)
+
     
     if result:
         return {"result": "Same Output"}
